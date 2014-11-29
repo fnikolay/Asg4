@@ -1,5 +1,5 @@
 //Ryan Schreiber & Fedor Nikolayev
-
+#include <bitset>
 #include <assert.h>
 #include <inttypes.h>
 #include <stdarg.h>
@@ -10,15 +10,19 @@
 #include "symboltypes.h"
 #include "astree.h"
 #include "stringset.h"
-#include "lyutils.h"
-#include "comutils.h"
 
 //symbol_table ident_table;
 //symbol_table struct_table;
 vector<symbol_table*> symbol_stack;
 
+void print_sym(string id_name, symbol * sym){
+    printf("%s (%ld.%ld.%ld) {%ld}\n", id_name.c_str(),
+        sym->filenr, sym->linenr, sym->offset, sym->blocknr);
+
+}
 
 
+//Create needed symbol tables
 symbol * process_node(astree * node, size_t depth, symbol_table * table){
 	symbol * sym = NULL;
     if (node->symbol == TOK_VARDECL){
@@ -26,13 +30,37 @@ symbol * process_node(astree * node, size_t depth, symbol_table * table){
     	sym = process_node(node->children[0], depth, table);
 	} 
 	else if (node->symbol == TOK_INT){
-		printf("Inserting integer symbol %s\n", node->lexinfo->c_str());
+		const string * id_name = node->children[0]->lexinfo;
 		sym = create_sym(node, depth);
 		sym->attributes = ATTR_int;
-     //   table [node->lexinfo] = sym;
-        table->insert (symbol_entry ((string *)node->lexinfo,sym));
+     //   table [node->lexinfo] = sym = create_sym(node, depth);sym;
+        table->insert (symbol_entry ((string *)id_name, sym));
+        print_sym(* id_name, sym);
+        //printf("Inserting integer symbol %s\n", id_name->c_str());
 
-	} else {
+	} else if (node->symbol == TOK_STRUCT){
+		sym = create_sym(node, depth);
+		sym->attributes = ATTR_struct;
+		sym->fields = new symbol_table ();
+		string * id_name = NULL;
+		for ( size_t i = 0; i < node->children.size(); i++){
+    	    astree * child = node->children[i];
+    	    if (child->symbol == TOK_IDENT) {
+    	    	if (child->children.size () > 0) {
+
+                  symbol * sym1 = create_sym(node, depth + 1);
+		          sym1->attributes = ATTR_field;
+    	    	} else {
+                    id_name = (string *)child->lexinfo;
+                }
+    	    } else {
+    	    	process_node(child, depth + 1, sym->fields);
+    	    }
+    	}
+    	table->insert (symbol_entry ((string *)id_name,sym));
+
+	}else{
+		
 		printf("Found Token that is not handled yet %s\n", node->lexinfo->c_str());
 	}
 	return sym;
@@ -56,11 +84,13 @@ void parse_ast(astree * root){
 	}
 	symbol_table * table = new symbol_table();
 
-	for ( int i = 0; i < root->children.size(); i++){
+	for ( size_t i = 0; i < root->children.size(); i++){
     	astree * child = root->children[i];
     	process_node(child, 0, table);
     }
 }
+
+
 
 /*
 static void dump_node (FILE* outfile, astree* node) {
