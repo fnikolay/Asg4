@@ -21,6 +21,7 @@ using namespace std;
 #include "astree.h"
 #include "lyutils.h"
 #include "comutils.h"
+#include "symboltypes.h"
 
 FILE * tok;
 FILE * ast;
@@ -72,6 +73,7 @@ void scanTokens (char** argv){
     tok = createFile(getBaseName(argv[optind]), ".tok");
     yyparse();
     dump_astree (ast, yyparse_astree) ;
+    parse_ast (yyparse_astree);
 }
 
 void yyin_cpp_popen (const char* filename, int optind, char** argv) {

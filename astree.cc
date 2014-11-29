@@ -82,14 +82,6 @@ static void dump_node (FILE* outfile, astree* node) {
             tokenBaseName(get_yytname (node->symbol)),
             node->lexinfo->c_str(),
             node->filenr, node->linenr, node->offset);
-  // bool need_space = false;
-   /*for (size_t child = 0; child < node->children.size(); ++child) {
-      if (need_space) fprintf (outfile, " ");
-      need_space = true;
-      fprintf (outfile, "%p", node->children.at(child));
-      
-   }
-   */
 }
 
 static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
@@ -98,8 +90,6 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    for (i = 0; i < depth; ++i ){
       fprintf (outfile, "|%*s", 3, "");
    }
-   //fprintf (outfile, "%*s ", depth * 3, "");
-   //fprintf (outfile, "%*s%s ", depth * 3, "", root->lexinfo->c_str());
    dump_node (outfile, root);
    fprintf (outfile, "\n");
    for (size_t child = 0; child < root->children.size(); ++child) {
