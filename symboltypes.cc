@@ -35,12 +35,21 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 		//	addAttributes(sym->attributes, atr);
 		//	break;
 		//}
+		case TOK_TRUE:
+		case TOK_FALSE:
+		{
+		sym = create_sym (node,depth);
+		sym->attributes[ATTR_bool] = true;
+		break;
+	    }
 		case TOK_VARDECL:
 		{
 	    	printf("VarDecl \n");
 	    	sym = process_node(node->children[0], depth, table, isField);
+	    	symbol * con = process_node (node->children[1], depth, table, false);
+	    	sym.att
 	    	break;
-		} 
+		}
 		case TOK_INT:
 		{
 			const string * id_name = node->children[0]->lexinfo;
@@ -71,12 +80,13 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 		{
 			const string * id_name = node->children[0]->lexinfo;
 			sym = create_sym(node, depth);
-			addAttributes(sym->attributes,ATTR_char);
+			addAttributes(sym->attributes,ATTR_bool);
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
 	        table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
+
 	        break;
 		}
 		case TOK_TYPEID:

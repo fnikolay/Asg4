@@ -55,8 +55,9 @@ program     : program structdef         { $$ = adopt1 ($1, $2);}
 structdef   : contstruct '}'            { $$ = $1; free_ast($2); }
             ;
 
-contstruct  : contstruct fielddecl ';'  {$$ = adopt1($1, $2);
-                                            free_ast($3); }
+contstruct  : contstruct fielddecl ';'  {free_ast($3); 
+                                            $$ = adopt1($1, $2);
+                                        }
             | TOK_STRUCT TOK_IDENT '{'  {$$ = adopt1sym($1,
                                             $2, TOK_TYPEID);
                                             free_ast($3);}
@@ -100,18 +101,18 @@ identdecl   : basetype TOK_IDENT        { $$ = adopt1 ($1,
             | basetype TOK_ARRAY TOK_IDENT
                                         { $$ = adopt2 ($2, $1,
                                             changeSym($3, TOK_DECLID));
-                                            }
+                                        }
             ;
 
 
-block       : state '}'               { $$ = $1, free_ast($2); }
-            |'{' '}'                  { $$ = changeSym($1,TOK_BLOCK); free_ast ($2); }
+block       : state '}'                { $$ = $1, free_ast($2); }
+            |'{' '}'                   { $$ = changeSym($1,TOK_BLOCK); free_ast ($2); }
             | ';'                      { free_ast($1);}
             //{ $$ = changeSym($1,TOK_BLOCK); } 
             ;
 
-state       : '{' statement                     { $$ = adopt1(changeSym($1,TOK_BLOCK), $2); }
-            | state statement                   { $$ = adopt1($1,$2); }
+state       : '{' statement             { $$ = adopt1(changeSym($1,TOK_BLOCK), $2); }
+            | state statement           { $$ = adopt1($1,$2); }
             ;
 
 statement   : block                     { $$ = $1; }
@@ -119,12 +120,14 @@ statement   : block                     { $$ = $1; }
             | while                     { $$ = $1; }
             | ifelse                    { $$ = $1; }
             | return                    { $$ = $1; }
-            | expr ';'                  { $$ = $1; free_ast ($2); }
+            | expr ';'                  { free_ast ($2); 
+                                          $$ = $1; }
             ;
 
-vardecl     : identdecl '=' expr ';'    { $$ = adopt2 (changeSym($2,
+vardecl     : identdecl '=' expr ';'    { free_ast($4);
+                                            $$ = adopt2 (changeSym($2,
                                             TOK_VARDECL), $1, $3);
-                                            free_ast($4); }
+                                        }
             ;
 
 while       : TOK_WHILE '(' expr ')' statement
@@ -142,11 +145,13 @@ ifelse      : TOK_IF '(' expr ')' statement %prec TOK_ELSE
                                             free_ast($6); }
             ;
 
-return      : TOK_RETURN ';'            { $$ = changeSym ($1,
+return      : TOK_RETURN ';'            { free_ast($2);
+                                            $$ = changeSym ($1,
                                             TOK_RETURNVOID);
-                                            free_ast ($2); }
-            | TOK_RETURN expr ';'       { $$ = adopt1 ($1, $2);
-                                            free_ast ($3); }
+                                        }
+            | TOK_RETURN expr ';'       { free_ast ($3); 
+                                            $$ = adopt1 ($1, $2);
+                                        }
             ;
 
 expr        : binopexpr                 { $$ = $1; }
