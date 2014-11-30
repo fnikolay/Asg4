@@ -38,7 +38,7 @@ struct symbol {
 };
 void print_sym(string id_name, symbol * sym);
 symbol * process_node(astree * node, size_t depth, symbol_table& table);
-void addAttributes(attr_bitset& sym_attribute, int attribute[]);
+void addAttributes(attr_bitset& sym_attribute, int attribute);
 symbol * create_sym (astree * node, size_t depth);
 void parse_ast(astree * root);
 

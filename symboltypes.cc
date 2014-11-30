@@ -44,52 +44,65 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 		case TOK_INT:
 		{
 			const string * id_name = node->children[0]->lexinfo;
-			int atr[] = {ATTR_int};
 			sym = create_sym(node, depth);
-			addAttributes(sym->attributes,atr);
-			sym->attributes[ATTR_field] = isField;
-			//sym->attributes[ATTR_int] = true;
-	     //   table [node->lexinfo] = sym = create_sym(node, depth);sym;
+			addAttributes(sym->attributes,ATTR_int);
+			//it is a field only if it is in a struct
+			if (isField)
+				addAttributes(sym->attributes,ATTR_field);
 	        table[(string *)id_name] = sym;
 	        //table->insert (symbol_entry ((string *)id_name, sym));
 	        print_sym(* id_name, sym);
 	        //printf("Inserting integer symbol %s\n", id_name->c_str());
 	        break;
 		}
+		case TOK_CHAR:
+		{
+			const string * id_name = node->children[0]->lexinfo;
+			sym = create_sym(node, depth);
+			addAttributes(sym->attributes,ATTR_char);
+			//it is a field only if it is in a struct
+			if (isField)
+				addAttributes(sym->attributes,ATTR_field);
+	        table[(string *)id_name] = sym;
+	        print_sym(* id_name, sym);
+	        break;
+		}
+		case TOK_BOOL:
+		{
+			const string * id_name = node->children[0]->lexinfo;
+			sym = create_sym(node, depth);
+			addAttributes(sym->attributes,ATTR_char);
+			//it is a field only if it is in a struct
+			if (isField)
+				addAttributes(sym->attributes,ATTR_field);
+	        table[(string *)id_name] = sym;
+	        print_sym(* id_name, sym);
+	        break;
+		}
 		case TOK_TYPEID:
 		{
 			const string * struct_id = node->lexinfo;
-
-			int atr[] = {ATTR_struct};
 			sym = create_sym(node, depth);
-			addAttributes(sym->attributes, atr);
-			sym->attributes[ATTR_field] = isField;
+			addAttributes(sym->attributes, ATTR_struct);
+			if (isField)
+				addAttributes(sym->attributes, ATTR_field);
 			sym->fields = new symbol_table ();
 			const string * id_name = node->children[0]->lexinfo;
 			printf("The id_name of the struct is: %s\n", id_name->c_str());
-			struct_table[(string *)id_name] = sym;//->insert (symbol_entry ((string *)id_name,sym));
+			struct_table[(string *)id_name] = sym;
 			for ( size_t i = 1; i < node->children.size(); i++){
 	    	    astree * child = node->children[i];
 	    	    if (child->symbol == TOK_IDENT) {
 	    	    	const string * id_name = child->children[0]->lexinfo;
 	    	    	const string * type_name = child->lexinfo;
-	    	    	printf("the id_name of TOK_IDENT is: %s and the type_name is %s\n", id_name->c_str(), type_name->c_str());
+	    	    	
+	    	    	//printf("the id_name of TOK_IDENT is: %s and the type_name is %s\n",
+	    	    	//	id_name->c_str(), type_name->c_str());
 	    	    	symbol * sym1 = create_sym(child, depth + 1);
-	    	    	int atr1[] = {ATTR_field};
-	               
-	                addAttributes(sym1->attributes, atr1);
+	                addAttributes(sym1->attributes, ATTR_field);
 	                sym1->type =(string *) type_name;
 	                table[(string *)id_name] = sym1;
-/*
-	    	    	if (child->children.size () > 0) {
-	    	    	  int atr1[] = {ATTR_field};
-	                  symbol * sym1 = create_sym(node, depth + 1);
-	                  addAttributes(sym1->attributes, atr1);
-			          //sym1->attributes[ATTR_field] = true;
-	    	    	} else {
-	                    id_name = (string *)child->lexinfo;
-	                }
-	                */
+	                print_sym(* id_name, sym1);
 	    	    } else {
 	    	    	process_node(child, depth + 1, *sym->fields, true);
 	    	    }
@@ -98,9 +111,8 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	    }
 		case TOK_STRUCT:
 		{
-			int atr[] = {ATTR_struct};
 			sym = create_sym(node, depth);
-			addAttributes(sym->attributes, atr);
+			addAttributes(sym->attributes, ATTR_struct);
 			sym->attributes[ATTR_field] = isField;
 			sym->fields = new symbol_table ();
 			const string * id_name = node->children[0]->lexinfo;
@@ -112,10 +124,8 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	    	    	const string * id_name = child->children[0]->lexinfo;
 	    	    	const string * type_name = child->lexinfo;
 	    	    	printf("the id_name of TOK_IDENT is: %s and the type_name is %s\n", id_name->c_str(), type_name->c_str());
-	    	    	symbol * sym1 = create_sym(child, depth + 1);
-	    	    	int atr1[] = {ATTR_field};
-	               
-	                addAttributes(sym1->attributes, atr1);
+	    	    	symbol * sym1 = create_sym(child, depth + 1);	               
+	                addAttributes(sym1->attributes, ATTR_field);
 	                sym1->type =(string *) type_name;
 	                table[(string *)id_name] = sym1;
 /*
@@ -136,7 +146,8 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	    	break;
 	    }
 		default:
-			printf("Found Token that is not handled yet %s\n", node->lexinfo->c_str());
+			printf("Found Token that is not handled yet %s with the TOK called: %s\n",
+				node->lexinfo->c_str(), get_yytname (node->symbol));
     }
 	return sym;
 }
@@ -146,11 +157,8 @@ symbol * protToSymbol (astree * node, depth){
 }
 */
 //set attributes of the symbol attributes.
-void addAttributes(attr_bitset& sym_attribute, int attribute[]){
-	int num_att = sizeof(attribute);
-	for (int i = 0; i < num_att; ++i){
-		sym_attribute[attribute[i]] = true;
-	}
+void addAttributes(attr_bitset& sym_attribute, int attribute){
+	sym_attribute[attribute] = true;
 }
 
 symbol * create_sym (astree * node, size_t depth){
@@ -170,7 +178,7 @@ void parse_ast(astree * root){
 	{
 		return;  // must be root
 	}
-	symbol_table table;
+	//symbol_table table;
 
 	for ( size_t i = 0; i < root->children.size(); i++){
     	astree * child = root->children[i];
