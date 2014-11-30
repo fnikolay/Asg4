@@ -22,11 +22,17 @@ void print_sym(string id_name, symbol * sym){
 
 }
 
+//check if the two bitset attributes are the same
+bool typeCheck(attr_bitset& first, attr_bitset& second, int atr){
+	return first[atr] == second[atr];
+}
+
 
 //Create needed symbol tables
 symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isField){
 
 	symbol * sym = NULL;
+
 	switch (node->symbol){
 		//case TOK_PROTOTYPE:
 		//{
@@ -38,16 +44,32 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 		case TOK_TRUE:
 		case TOK_FALSE:
 		{
-		sym = create_sym (node,depth);
-		sym->attributes[ATTR_bool] = true;
-		break;
+			printf("found either TRUE or FALSE\n");
+			sym = create_sym (node,depth);
+			sym->attributes[ATTR_bool] = true;
+
+			break;
 	    }
 		case TOK_VARDECL:
 		{
-	    	printf("VarDecl \n");
-	    	sym = process_node(node->children[0], depth, table, isField);
-	    	symbol * con = process_node (node->children[1], depth, table, false);
-	    	sym.att
+	    	printf("VarDecl\n");
+	    	sym = process_node (node->children[0], depth, table, isField);
+	    	printf("going into constant symbol (to the right of the = sign)\n");
+	    	if (node->children.size() > 1){
+	    		printf("there are more than 1 child of the node.\n");
+	    	    symbol * con = process_node (node->children[1], depth, table, false);
+	    	    bool equal = typeCheck(sym->attributes, con->attributes, ATTR_bool);
+	    	    printf("the two attributes are: %d\n", equal);
+
+	    	    if( !equal){
+	    	    	printf("NOT A BOOLEAN\n");
+	    	    }else{
+	    	    	printf("IS A BOOLEAN\n");
+	    	    }
+	    	}
+
+	    	//print_sym(* id_name, sym);
+	    	
 	    	break;
 		}
 		case TOK_INT:
@@ -167,6 +189,7 @@ symbol * protToSymbol (astree * node, depth){
 }
 */
 //set attributes of the symbol attributes.
+
 void addAttributes(attr_bitset& sym_attribute, int attribute){
 	sym_attribute[attribute] = true;
 }
