@@ -28,6 +28,28 @@ bool typeCheck(attr_bitset& first, attr_bitset& second, int atr){
 	return first[atr] == second[atr];
 }
 
+/*
+//added this one need to 
+void intern_sym(symbol_table& table, sym_ref* sym, const string* key){
+  
+  string * key = (string*) intern_stringset(key->c_str());
+  
+  if(not is_in_sym_table(table, key)){
+    table[newKey] = sym;
+    DEBUGF('s', "\tAdded symbol to table[%s]\n", newKey->c_str());
+  }else{
+    eprintf("%s:%d:%d error: redeclaration of '%s'\n\
+             previously declared here: %s %d:%d\n",
+            included_filenames[sym->filenr].c_str(), (int) sym->linenr,
+            (int) sym->offset, newKey->c_str(),
+            included_filenames[table[newKey]->filenr].c_str(),
+            (int) table[newKey]->linenr,
+            (int) table[newKey]->offset
+    );
+    set_exitstatus(EXIT_FAILURE);
+  }
+}
+*/
 //only when adding a struct to a symbol table
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table){
 	for ( size_t i = 1; i < node->children.size(); i++){
@@ -168,11 +190,25 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 
 			break;
 		}
+		case TOK_VOID:
+		{
+			const string * key = (string*) intern_stringset("void");
+			const string * id_name = node->children[0]->lexinfo;
+			printf("id_name is: %s, key name is:%s.\n", id_name->c_str(), key->c_str());
+			sym = create_sym(node, depth);
+			addAttributes(sym->attributes,ATTR_string);
+			//it is a field only if it is in a struct
+			if (isField)
+				addAttributes(sym->attributes,ATTR_field);
+	        table[(string *)key] = sym;
+	        //table[(string *)id_name] = sym;
+	        print_sym(* id_name, sym);
+			break;
+		}
 		case TOK_TYPEID:
 		{
 
 			const string * struct_id = node->lexinfo;
-			
 			sym = create_sym(node, depth);
 			addAttributes(sym->attributes, ATTR_struct);
 			if (isField)
@@ -192,7 +228,7 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			sym->fields = new symbol_table ();
 			const string * id_name = node->children[0]->lexinfo;
 			printf("The id_name of the struct is: %s\n", id_name->c_str());
-			struct_table[(string *)id_name] = sym;//->insert (symbol_entry ((string *)id_name,sym));
+			struct_table[(string *)id_name] = sym;
 			for ( size_t i = 1; i < node->children.size(); i++){
 	    	    astree * child = node->children[i];
 	    	    if (child->symbol == TOK_IDENT) {
