@@ -20,6 +20,7 @@ extern int yy_flex_debug;
 extern int yydebug;
 extern int yyleng;
 extern int yylineno;
+extern vector<string> included_filenames;
 
 int yylex (void);
 int yyparse (void);

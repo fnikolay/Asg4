@@ -10,6 +10,8 @@
 #include "symboltypes.h"
 #include "astree.h"
 #include "stringset.h"
+#include "lyutils.h"
+#include "auxlib.h"
 
 symbol_table ident_table;
 symbol_table struct_table;
@@ -28,11 +30,24 @@ bool typeCheck(attr_bitset& first, attr_bitset& second, int atr){
 	return first[atr] == second[atr];
 }
 
-/*
-//added this one need to 
-void intern_sym(symbol_table& table, sym_ref* sym, const string* key){
+///////////////////////////////////////////////////////////////////////////////////////////
+
+bool is_in_sym_table(symbol_table& table, const string* key){
+
+  string* newKey = (string*) intern_stringset(key->c_str());
   
-  string * key = (string*) intern_stringset(key->c_str());
+  if(table.find(newKey) == table.end()){
+  	return false;
+  }else{
+  	return true;
+
+  }
+}
+
+//added this one need to 
+void intern_sym(symbol_table& table, symbol * sym, const string* key){
+  
+  string * newKey = (string*) intern_stringset(key->c_str());
   
   if(not is_in_sym_table(table, key)){
     table[newKey] = sym;
@@ -49,7 +64,7 @@ void intern_sym(symbol_table& table, sym_ref* sym, const string* key){
     set_exitstatus(EXIT_FAILURE);
   }
 }
-*/
+///////////////////////////////////////////////////////////////////////////////////
 //only when adding a struct to a symbol table
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table){
 	for ( size_t i = 1; i < node->children.size(); i++){
@@ -137,7 +152,10 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
-			table[(string *)key] = sym;
+				
+			intern_sym(table,sym, id_name);				
+
+			//table[(string *)key] = sym;
 	        //table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
 	        //printf("Inserting integer symbol %s\n", id_name->c_str());
@@ -153,7 +171,9 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
-	        table[(string *)key] = sym;
+				
+			intern_sym(table,sym, id_name);	
+	        //table[(string *)key] = sym;
 	        //table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
 	        break;
@@ -168,7 +188,9 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
-	        table[(string *)key] = sym;
+				
+			intern_sym(table,sym, id_name);	
+	        //table[(string *)key] = sym;
 	        //table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
 
@@ -184,7 +206,9 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
-	        table[(string *)key] = sym;
+				
+			intern_sym(table,sym, id_name);	
+	        //table[(string *)key] = sym;
 	        //table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
 
@@ -200,14 +224,15 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			//it is a field only if it is in a struct
 			if (isField)
 				addAttributes(sym->attributes,ATTR_field);
-	        table[(string *)key] = sym;
+				
+			intern_sym(table,sym, id_name);	
+	        //table[(string *)key] = sym;
 	        //table[(string *)id_name] = sym;
 	        print_sym(* id_name, sym);
 			break;
 		}
 		case TOK_TYPEID:
 		{
-
 			const string * struct_id = node->lexinfo;
 			sym = create_sym(node, depth);
 			addAttributes(sym->attributes, ATTR_struct);

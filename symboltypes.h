@@ -12,6 +12,9 @@
 #include "stringset.h"
 #include "lyutils.h"
 #include "comutils.h"
+#include "lyutils.h"
+#include "auxlib.h"
+
 using namespace std;
 
 enum { ATTR_void, ATTR_bool, ATTR_char, ATTR_int, ATTR_null,
@@ -38,6 +41,8 @@ struct symbol {
 };
 void print_sym(string id_name, symbol * sym);
 bool typeCheck(attr_bitset& first, attr_bitset& second, int atr);
+bool is_in_sym_table(symbol_table& table, const string* key);
+void intern_sym(symbol_table& table, symbol * sym, const string* key);
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table);
 void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table);
 symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isField);
