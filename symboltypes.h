@@ -38,7 +38,9 @@ struct symbol {
 };
 void print_sym(string id_name, symbol * sym);
 bool typeCheck(attr_bitset& first, attr_bitset& second, int atr);
-symbol * process_node(astree * node, size_t depth, symbol_table& table);
+void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table);
+void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table);
+symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isField);
 void addAttributes(attr_bitset& sym_attribute, int attribute);
 symbol * create_sym (astree * node, size_t depth);
 void parse_ast(astree * root);
