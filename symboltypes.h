@@ -45,8 +45,9 @@ bool existsInTable(symbol_table& table, const string* id);
 void addSymToTable(symbol_table& table, const string* id, symbol * sym);
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table);
 void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table);
-void performFieldAttr(symbol * sym, bool isField);
-symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isField);
+void performAttr(symbol * sym, bool isField, bool isParam);
+symbol * process_node(astree * node, size_t depth, symbol_table& table,
+  bool isField, bool isParam);
 void addAttributes(attr_bitset& sym_attribute, int attribute);
 symbol * create_sym (astree * node, size_t depth);
 void parse_ast(astree * root);
