@@ -14,7 +14,7 @@
 #include "auxlib.h"
 
 symbol_table ident_table;
-symbol_table struct_table;
+symbol_table global_table;
 vector<symbol_table*>* symbol_stack;
 int block_num;
 
@@ -88,6 +88,29 @@ void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table
     }
 }
 
+void funcAstToSym (astree * node, int depth, symbol * sym, symbol_table& table){
+	for ( size_t i = 1; i < node->children.size(); i++){
+	    astree * child = node->children[i];
+	    if (child->symbol == TOK_IDENT) {
+	    	printf("\n");
+   	    	const string * id_name = child->children[0]->lexinfo;
+   	    	const string * type_name = child->lexinfo;
+   	    	printf("in struct:\n");
+   	    	printf("id_name is: %s, type name is:%s.\n", id_name->c_str(), type_name->c_str());
+   	    	//printf("the id_name of TOK_IDENT is: %s and the type_name is %s\n",
+   	    	//	id_name->c_str(), type_name->c_str());
+   	    	symbol * sym1 = create_sym(child, depth + 1);
+            addAttributes(sym1->attributes, ATTR_field);
+            sym1->type =(string *) type_name;
+            addSymToTable(table,id_name, sym1);
+            //table[(string *)id_name] = sym1;
+            print_sym(* id_name, sym1);
+ 	    } else {
+   	    	process_node(child, depth + 1, *sym->fields, false);
+   	    }
+    }
+}
+
 //we will need to check types of all of the needed variables. 
 //only doing boolean so far.
 void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table){
@@ -126,13 +149,6 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	symbol * sym = NULL;
 
 	switch (node->symbol){
-		//case TOK_PROTOTYPE:
-		//{
-		//	int atr[] = {ATTR_prototype};
-		//	sym = create_sym(node, depth);
-		//	addAttributes(sym->attributes, atr);
-		//	break;
-		//}
 		case TOK_TRUE:
 		case TOK_FALSE:
 		{
@@ -153,6 +169,23 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	    	
 	    	break;
 		}
+		case TOK_IDENT:
+		{
+			const string * id_name = node->children[0]->lexinfo;
+   	    	const string * type_name = node->lexinfo;
+			printf("id_name is: %s, type name is:%s.\n", id_name->c_str(), type_name->c_str());
+			sym = create_sym(node, depth);
+			printf("went into tok_ident\n");
+			sym->type =(string *) type_name;
+			addAttributes(sym->attributes,ATTR_struct);
+			//it is a field only if it is in a struct
+			performFieldAttr(sym, isField);
+			addSymToTable(table, id_name, sym);
+	        //table[(string *)key] = sym;
+	        //table[(string *)id_name] = sym;
+	        print_sym(* id_name, sym);
+			break;
+	    }
 		case TOK_INT:
 		{
 			const string * key = (string*) intern_stringset("int");
@@ -238,6 +271,22 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 			sym = create_sym(node, depth);
 			addAttributes(sym->attributes, ATTR_struct);
 			performFieldAttr(sym, isField);
+			sym->type = (string *) struct_id;
+			sym->fields = new symbol_table ();
+			const string * id_name = node->children[0]->lexinfo;
+			printf("id_name is: %s\n", id_name->c_str());
+			//global_table[(string *)id_name] = sym;
+			table[(string *)id_name] = sym;
+	    	structAstToSym (node, depth, sym, table);
+	    	break;
+	    }
+	    /*
+	    case TOK_PROTOTYPE:
+	    {
+			const string * prot_id = node->lexinfo;
+			sym = create_sym(node, depth);
+			addAttributes(sym->attributes, ATTR_struct);
+			performFieldAttr(sym, isField);
 			sym->fields = new symbol_table ();
 			const string * id_name = node->children[0]->lexinfo;
 			printf("id_name is: %s\n", id_name->c_str());
@@ -245,22 +294,46 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
 	    	structAstToSym (node, depth, sym, table);
 	    	break;
 	    }
-	    case TOK_IDENT:
-		{
+	    */
+	    case TOK_FUNCTION:
+	    {
+	    	printf("\n");
+	    	bool isFunc = true;
+	    	astree * func = node->children[0];
+	    	const string * func_id = func->children[0]->lexinfo;
+	    	const string * func_type = func->lexinfo;
+			//printf("The function type is: %s, and ID name is: %s\n",func_type.c_str(), func_id.c_str());
+			sym = create_sym(func, depth);
+			addAttributes(sym->attributes, ATTR_function);
+			addSymToTable(global_table, func_id, sym);
+
+			astree * param = node->children[1];
+
+			if (param->symbol == TOK_PARAM){
+				addAttributes(sym->attributes, ATTR_param);
+				process_node(param, depth, table, false);
+			}
+			//table[(string *)id_name] = sym;
+			//performFieldAttr(sym, false);
+			//need to go through parameters of a function
+
+			//need to go through the block of the function
+
+			//need to check the return value
+
+/*
+			sym->fields = new symbol_table ();
 			const string * id_name = node->children[0]->lexinfo;
-   	    	const string * type_name = node->lexinfo;
-			printf("id_name is: %s, type name is:%s.\n", id_name->c_str(), type_name->c_str());
-			sym = create_sym(node, depth);
-			printf("went into tok_ident\n");
-			sym->type =(string *) type_name;
-			addAttributes(sym->attributes,ATTR_struct);
-			//it is a field only if it is in a struct
-			performFieldAttr(sym, isField);
-			addSymToTable(table, id_name, sym);
-	        //table[(string *)key] = sym;
-	        //table[(string *)id_name] = sym;
-	        print_sym(* id_name, sym);
-			break;
+			printf("id_name is: %s\n", id_name->c_str());
+			//struct_table[(string *)id_name] = sym;
+	    	structAstToSym (node, depth, sym, table);
+	    	*/
+	    	break;
+	    }
+	    case TOK_PARAM:
+	    {
+
+	    	break;
 	    }
 	    default:
 	    {
@@ -271,13 +344,6 @@ symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isF
     }
 	return sym;
 }
-/*
-symbol * protToSymbol (astree * node, depth){
-
-}
-*/
-//set attributes of the symbol attributes.
-
 
 void addAttributes(attr_bitset& sym_attribute, int attribute){
 	sym_attribute[attribute] = true;

@@ -78,22 +78,16 @@ basetype    : TOK_VOID                  { $$ = $1; }
             | TOK_STRING                { $$ = $1; }
             | TOK_IDENT                 { $$ = $1; }
 
-function    : identdecl '(' contfunc ')' block
-                                        { $2 = adopt1sym($2, $3,
-                                            TOK_PARAM);
-                                            $$ = 
-                                            createFunction($1, $2, $5);
-                                            free_ast($4); }
-            | identdecl '(' ')' block   { 
-                                            $$ = createFunction ($1,
-                                            adopt1sym($2, $3,
-                                            TOK_PARAM), $4); }
-            ;
 
-contfunc    : contfunc ',' identdecl    { $$ = adopt1($1, $3); 
-                                            free_ast($2);}
-            | identdecl                 { $$ = $1; }      
-            ;
+function : identdecl contfunc ')' block        
+                                        {free_ast($3); $$ = createFunction($1, $2, $4);}
+
+contfunc: contfunc ',' identdecl {$$ = adopt1($1, $3);}
+            | '(' identdecl                  
+                                        {$$ = adopt1sym($1, $2, TOK_PARAM);}
+            | '('                            
+                                        {$$ = changeSym($1, TOK_PARAM);}
+
 
 identdecl   : basetype TOK_IDENT        { $$ = adopt1 ($1,
                                             changeSym($2,
