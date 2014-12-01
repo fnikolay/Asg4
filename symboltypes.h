@@ -37,14 +37,15 @@ struct symbol {
    size_t filenr, linenr, offset;
    size_t blocknr;
    vector<symbol*>* parameters;
-   string * type; 
+   string * type;        //type is used when the variable is of type struct
 };
 void print_sym(string id_name, symbol * sym);
 bool typeCheck(attr_bitset& first, attr_bitset& second, int atr);
-bool is_in_sym_table(symbol_table& table, const string* key);
-void intern_sym(symbol_table& table, symbol * sym, const string* key);
+bool existsInTable(symbol_table& table, const string* id);
+void addSymToTable(symbol_table& table, const string* id, symbol * sym);
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table);
 void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table);
+void performFieldAttr(symbol * sym, bool isField);
 symbol * process_node(astree * node, size_t depth, symbol_table& table, bool isField);
 void addAttributes(attr_bitset& sym_attribute, int attribute);
 symbol * create_sym (astree * node, size_t depth);
