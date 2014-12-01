@@ -87,7 +87,7 @@ void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table)
 				printf("IS A BOOLEAN\n");
 			}
 		}else{
-			printf("NOT CHECKING this TYPE YET! NEED TO ADD.\n", );
+			printf("NOT CHECKING this TYPE YET! NEED TO ADD.\n");
 		}
 		
 	}
