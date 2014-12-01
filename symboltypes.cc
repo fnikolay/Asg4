@@ -66,7 +66,7 @@ void addSymToTable(symbol_table& table, const string* id, symbol * sym){
 ///////////////////////////////////////////////////////////////////////////////////
 //only when adding a struct to a symbol table
 void structAstToSym (astree * node, int depth, symbol * sym, symbol_table& table){
-	block_num++;
+	//block_num++;
 	for ( size_t i = 1; i < node->children.size(); i++){
 	    astree * child = node->children[i];
 	    if (child->symbol == TOK_IDENT) {
