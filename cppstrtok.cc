@@ -25,6 +25,7 @@ using namespace std;
 
 FILE * tok;
 FILE * ast;
+FILE * sym;
 const string CPP = "/usr/bin/cpp";
 const size_t LINESIZE = 1024;
 string yyin_cpp_command;
@@ -71,9 +72,10 @@ void scanTokens (char** argv){
 
     ast = createFile(getBaseName(argv[optind]), ".ast");
     tok = createFile(getBaseName(argv[optind]), ".tok");
+    
     yyparse();
     dump_astree (ast, yyparse_astree) ;
-    parse_ast (yyparse_astree);
+    parse_ast (yyparse_astree, argv, optind);
 }
 
 void yyin_cpp_popen (const char* filename, int optind, char** argv) {
