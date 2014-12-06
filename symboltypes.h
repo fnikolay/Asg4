@@ -48,6 +48,11 @@ const char* attrToStr (symbol* node);
 void dumpToFile(FILE* symFile, string lexinfo, symbol* sym, int depth);
 void checkEqual (astree * node, symbol * sym, size_t depth, symbol_table& table);
 void performAttr(symbol * sym, bool isField, bool isParam);
+void classifyIdent (astree * node, size_t depth, symbol_table& table,
+  symbol* sym, bool isField, bool isParam);
+void classifySymbol (astree * node, size_t depth, symbol_table& table,
+  symbol* sym, int attr, bool isField, bool isParam);
+void functionAttr(astree * func, symbol * sym);
 symbol * process_node(astree * node, size_t depth, symbol_table& table,
   bool isField, bool isParam);
 void addAttributes(attr_bitset& sym_attribute, int attribute);
