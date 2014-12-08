@@ -8,9 +8,11 @@
 
 
 using namespace std;
-//#include "symboltypes.h"
+
 #include "auxlib.h"
-//struct symbol;
+#include "symboltypes.h"
+
+struct symb;
 struct astree {
    int symbol;               // token code
    size_t filenr;            // index into filename stack
@@ -18,7 +20,7 @@ struct astree {
    size_t offset;            // offset of token with current line
    const string* lexinfo;    // pointer to lexical information
    vector<astree*> children; // children of this n-way node
-  // symbol * sym;             // symbol that is associated with symbol table 
+   symb* sym;               // symbol that is associated with symbol table 
 };
 
 astree* new_astree (int symbol, int filenr, int linenr, int offset,

@@ -10,6 +10,7 @@
 #include "auxlib.h"
 
 #define YYEOF 0
+struct astree;
 
 extern FILE* tok;
 extern FILE* yyin;

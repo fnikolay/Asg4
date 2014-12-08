@@ -7,12 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "symboltypes.h"
 #include "astree.h"
 #include "stringset.h"
 #include "lyutils.h"
 #include "comutils.h"
-//#include "symboltypes.h"
-
 astree* new_astree (int symbol, int filenr, int linenr, int offset,
                     const char* lexinfo) {
    astree* tree = new astree();
@@ -21,6 +20,7 @@ astree* new_astree (int symbol, int filenr, int linenr, int offset,
    tree->linenr = linenr;
    tree->offset = offset;
    tree->lexinfo = intern_stringset (lexinfo);
+   tree->sym = new symb();
   // tree->sym = new symbol();
    DEBUGF ('f', "astree %p->{%d:%d.%d: %s: \"%s\"}\n",
            tree, tree->filenr, tree->linenr, tree->offset,
