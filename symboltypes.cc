@@ -124,9 +124,9 @@ void protAstToSym (astree * node, int depth, int attr, symb * symref,
 	dumpToFile(symFil, *prot_id, symref, depth);
 
 	///////adding new part//////////////
-	blockNum++;
-	curBlock.push_back(blockNum);
-	symbol_stack->push_back(new symbol_table());
+	//blockNum++;
+	//curBlock.push_back(blockNum);
+	//symbol_stack->push_back(new symbol_table());
 	////////////////////////////////////
 	astree * param = node->children[1];
 	//block_num++;
@@ -160,6 +160,13 @@ void funcAstToSym (astree * node, int depth, int attr, symb * symref,
 		fprintf(symFil, "\n");
 	}
 
+}
+
+void ifElseToSym(astree * node, int depth, int attr, symb * symref,
+	symbol_table& table){
+	astree * cond = node->children[0];
+	astree * ifBlock = node->children[1];
+	astree * elseBlock = node->children[2];
 }
 
 //we will need to check types of all of the needed variables. 
@@ -444,9 +451,14 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 	    case TOK_BLOCK:
 	    {
 	    	//block_num++;
-	    	symbol_stack->push_back(new symbol_table());
+	    	//symbol_stack->push_back(new symbol_table());
 	    	process_node(node, depth + 1, table,
 				false, false, (string *)"");
+
+	    	break;
+	    }
+	    case TOK_IFELSE:
+	    {
 
 	    	break;
 	    }
