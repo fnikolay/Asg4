@@ -1,8 +1,12 @@
 struct node { int foo; node link; }
 node func (node head, int length) {
-	int a = 0; string b = ""; node c = new node();
+	int a = 0;
+	string b = "";
+	node c = new node();
 	if (a < 3){
-		int d = 8; a = length; c = c.link; 
+		int d = 8;
+		a = length;
+		c = c.link; 
 	}
 	else { 
 		string e = "";

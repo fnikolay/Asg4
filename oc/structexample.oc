@@ -2,4 +2,5 @@ struct node {
 	int foo;
 	node link; 
 	char bar;
+	string poop;
 	}

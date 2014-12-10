@@ -12,6 +12,8 @@
 #include "stringset.h"
 #include "lyutils.h"
 #include "comutils.h"
+
+
 astree* new_astree (int symbol, int filenr, int linenr, int offset,
                     const char* lexinfo) {
    astree* tree = new astree();
@@ -80,7 +82,9 @@ astree* adopt1sym (astree* root, astree* child, int symbol) {
 
 
 static void dump_node (FILE* outfile, astree* node) {
-   fprintf (outfile, "%s \"%s\" %ld.%ld.%ld",
+
+   //symb * symRef = node->sym;
+   fprintf (outfile, "%s \"%s\" (%ld.%ld.%ld)",
             tokenBaseName(get_yytname (node->symbol)),
             node->lexinfo->c_str(),
             node->filenr, node->linenr, node->offset);
@@ -106,6 +110,7 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    fprintf (outfile, "\n");
    for (size_t child = 0; child < root->children.size(); ++child) {
       dump_astree_rec (outfile, root->children[child], depth + 1);
+      //parse_ast (symFil, root);
    }
 }
 
