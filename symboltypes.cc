@@ -51,7 +51,7 @@ bool existsInTable(symbol_table& table, const string* id){
 //Make sure that the variable type exists in the table
 void checkVariableType(symbol_table& table, const string* id, symb * symref){
   if(! existsInTable(table, id)){
-    eprintf("Error, variable declaration in file: %s, at position: %ld.%ld.
+    eprintf("Error, variable declaration in file: %s, at position: %ld.%ld.\
             The ID: '%s' is not a type.\n",
             included_filenames[symref->filenr].c_str(), symref->linenr,
             symref->offset, id->c_str());
@@ -68,8 +68,8 @@ void addSymToTable(symbol_table& table, const string* id, symb * symref){
     table[newId] = symref;
     printf("Added symbol to table[%s]\n", newId->c_str());
   }else{
-    eprintf("Error, redeclaration in file: %s at position: %d.%d. Redeclaration of '%s'
-             was previously declared at: %s %d:%d\n",
+    eprintf("Error, redeclaration in file: %s at position: %d.%d.\n\
+    		Redeclaration of '%s' was previously declared at: %s %d.%d\n",
             included_filenames[symref->filenr].c_str(), (int) symref->linenr,
             (int) symref->offset, newId->c_str(),
             included_filenames[table[newId]->filenr].c_str(),
