@@ -35,6 +35,8 @@ bool typeCheck(attr_bitset& first, attr_bitset& second, int atr){
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
+
+//boolean statement to check if the id already exists in the statement
 bool existsInTable(symbol_table& table, const string* id){
 
   string* newId = (string*) intern_stringset(id->c_str());
@@ -46,27 +48,28 @@ bool existsInTable(symbol_table& table, const string* id){
   }
 }
 
+//Make sure that the variable type exists in the table
 void checkVariableType(symbol_table& table, const string* id, symb * symref){
   if(! existsInTable(table, id)){
-    eprintf("%s:%ld:%ld error: Invalid variable declaration:\n\
-            '%s' is not a type.\n",
+    eprintf("Error, variable declaration in file: %s, at position: %ld.%ld\n\
+            The ID: '%s' is not a type.\n",
             included_filenames[symref->filenr].c_str(), symref->linenr,
             symref->offset, id->c_str());
     set_exitstatus(EXIT_FAILURE);
   }
 }
 
-//added this one need to 
+//Add a symbol to the table and check if it already exists
+//if it exists print an error.
 void addSymToTable(symbol_table& table, const string* id, symb * symref){
   
   string * newId = (string*) intern_stringset(id->c_str());
   if(!existsInTable(table, id)){
     table[newId] = symref;
     printf("Added symbol to table[%s]\n", newId->c_str());
-    //DEBUGF('s', "\tAdded symbol to table[%s]\n", newId->c_str());
   }else{
-    eprintf("%s:%d:%d error: redeclaration of '%s'\n\
-             previously declared here: %s %d:%d\n",
+    eprintf("Error, redeclaration in file: %s at position: %d.%d: redeclaration of '%s'\n\
+             was previously declared at: %s %d:%d\n",
             included_filenames[symref->filenr].c_str(), (int) symref->linenr,
             (int) symref->offset, newId->c_str(),
             included_filenames[table[newId]->filenr].c_str(),

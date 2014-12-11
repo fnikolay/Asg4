@@ -110,7 +110,6 @@ static void dump_astree_rec (FILE* outfile, astree* root, int depth) {
    fprintf (outfile, "\n");
    for (size_t child = 0; child < root->children.size(); ++child) {
       dump_astree_rec (outfile, root->children[child], depth + 1);
-      //parse_ast (symFil, root);
    }
 }
 
