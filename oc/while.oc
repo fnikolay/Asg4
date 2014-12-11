@@ -1,0 +1,10 @@
+int a = 5;
+int b = 0;
+while (a > b){
+	int q = 0;
+	bool [] c = null;
+	a = a + 1;
+	b = b - 1;
+}
+
+while (a > b);

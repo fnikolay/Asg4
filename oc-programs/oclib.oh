@@ -1,47 +1,36 @@
-// $Id: oclib.oh,v 1.24 2011-11-18 17:34:29-08 - - $
+// $Id: oclib.oh,v 1.30 2014-11-21 16:46:15-08 - - $
 
 #ifndef __OCLIB_OH__
 #define __OCLIB_OH__
 
 #ifdef __OCLIB_C__
-#   define __(ID)         __##ID
-#   define NONE__         void
-#   define VOID__(ID)     void __##ID
-#   define BOOL__(ID)     ubyte __##ID
-#   define CHAR__(ID)     ubyte __##ID
-#   define INT__(ID)      int __##ID
-#   define STRING__(ID)   ubyte *__##ID
-#   define STRINGS__(ID)  ubyte **__##ID
-#   define null           0
-#   define false          0
-#   define true           1
-typedef unsigned char ubyte;
-void *xcalloc (int nelem, int size);
+void* xcalloc (int nelem, int size);
+void __putb (char __b);
+void __putc (char __c);
+void __puti (int __i);
+void __puts (char* __s);
+void __endl (void);
+int __getc (void);
+char* __getw (void);
+char* __getln (void);
+char** __getargv (void);
+void __exit (int status);
+
 #else
-#   define EOF            (-1)
-#   define __(ID)         ID
-#   define NONE__
-#   define VOID__(ID)     void ID
-#   define BOOL__(ID)     bool ID
-#   define CHAR__(ID)     char ID
-#   define INT__(ID)      int ID
-#   define STRING__(ID)   string ID
-#   define STRINGS__(ID)  string[] ID
-VOID__(__assert_fail) (STRING__(expr), STRING__(file), INT__(line));
-#endif
-
-VOID__(putb) (BOOL__(b));
-VOID__(putc) (CHAR__(c));
-VOID__(puti) (INT__(i));
-VOID__(puts) (STRING__(s));
-VOID__(endl) (NONE__);
-INT__(getc) (NONE__);
-STRING__(getw) (NONE__);
-STRING__(getln) (NONE__);
-STRINGS__ (getargv) (NONE__);
-VOID__(exit) (int status);
+#define EOF (-1)
 #define assert(expr) \
-        {if (! (expr)) __(__assert_fail) (#expr, __FILE__, __LINE__);}
+        {if (!(expr)) __assert_fail (#expr, __FILE__, __LINE__);}
+void __assert_fail (string expr, string file, int line);
+void putb (bool b);
+void putc (char c);
+void puti (int i);
+void puts (string s);
+void endl ();
+int getc ();
+string getw ();
+string getln ();
+string[] getargv ();
+void exit (int status);
 
 #endif
-
+#endif

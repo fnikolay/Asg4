@@ -1,6 +1,8 @@
 struct node { 
-	int foo;
-	node link; 
+	int[] foo;
+	node link;
+	node link;
 	char bar;
+	int[] foo;
 	string poop;
 	}

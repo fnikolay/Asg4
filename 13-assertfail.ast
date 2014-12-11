@@ -60,44 +60,35 @@ ROOT "" 0.0.0
 |   |   PARAM "(" 5.42.10
 |   |   |   INT "int" 5.42.11
 |   |   |   |   DECLID "status" 5.42.15
-|   TYPEID "struct" 6.5.0
-|   |   IDENT "foo" 6.5.7
-|   |   INT "int" 6.6.3
-|   |   |   FIELD "a" 6.6.7
-|   VARDECL "=" 6.9.6
-|   |   INT "int" 6.9.0
-|   |   |   DECLID "a" 6.9.4
-|   |   INTCON "6" 6.9.8
-|   VARDECL "=" 6.10.6
-|   |   IDENT "foo" 6.10.0
-|   |   |   DECLID "b" 6.10.4
-|   |   TYPEID "new" 6.10.8
-|   |   |   IDENT "foo" 6.10.12
-|   '=' "=" 6.11.4
-|   |   '.' "." 6.11.1
-|   |   |   IDENT "b" 6.11.0
-|   |   |   FIELD "a" 6.11.2
-|   |   INTCON "8" 6.11.6
-|   '=' "=" 6.12.2
-|   |   IDENT "a" 6.12.0
-|   |   '+' "+" 6.12.12
-|   |   |   '*' "*" 6.12.6
-|   |   |   |   IDENT "a" 6.12.4
-|   |   |   |   '.' "." 6.12.9
-|   |   |   |   |   IDENT "b" 6.12.8
-|   |   |   |   |   FIELD "a" 6.12.10
-|   |   |   INTCON "6" 6.12.14
-|   IDENT "puti" 6.14.0
-|   CALL "(" 6.14.5
-|   |   IDENT "puti" 6.14.0
-|   |   IDENT "a" 6.14.6
-|   CALL "(" 6.15.5
-|   |   IDENT "putc" 6.15.0
-|   |   CHARCON "' '" 6.15.6
-|   CALL "(" 6.16.5
-|   |   IDENT "puti" 6.16.0
-|   |   '.' "." 6.16.7
-|   |   |   IDENT "b" 6.16.6
-|   |   |   FIELD "a" 6.16.8
-|   VOID "endl" 6.17.0
-|   |   '(' "(" 6.17.5
+|   CALL "(" 6.6.5
+|   |   IDENT "puts" 6.6.0
+|   |   INDEX "[" 6.6.15
+|   |   |   VOID "getargv" 6.6.6
+|   |   |   |   '(' "(" 6.6.13
+|   |   |   INTCON "0" 6.6.16
+|   CALL "(" 6.7.5
+|   |   IDENT "puts" 6.7.0
+|   |   STRINGCON "" was compiled "" 6.7.6
+|   CALL "(" 6.8.5
+|   |   IDENT "puts" 6.8.0
+|   |   STRINGCON ""Dec 11 2014"" 6.8.6
+|   CALL "(" 6.9.5
+|   |   IDENT "puts" 6.9.0
+|   |   STRINGCON "" @ "" 6.9.6
+|   CALL "(" 6.10.5
+|   |   IDENT "puts" 6.10.0
+|   |   STRINGCON ""13:42:44"" 6.10.6
+|   VOID "endl" 6.11.0
+|   |   '(' "(" 6.11.5
+|   BLOCK "{" 6.12.0
+|   |   IF "if" 6.12.1
+|   |   |   '!' "!" 6.12.5
+|   |   |   |   EQ "==" 6.12.17
+|   |   |   |   |   STRINGCON ""assert"" 6.12.8
+|   |   |   |   |   STRINGCON ""fail"" 6.12.20
+|   |   |   CALL "(" 6.12.43
+|   |   |   |   IDENT "__assert_fail" 6.12.29
+|   |   |   |   STRINGCON ""\"assert\" == \"fail\""" 6.12.44
+|   |   |   |   STRINGCON ""../oc-programs/13-assertfail.oc"" 6.12.70
+|   |   |   |   INTCON "12" 6.12.105
+|   $undefined ";" 6.12.110

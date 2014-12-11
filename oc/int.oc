@@ -1,1 +1,2 @@
 int integer = 3;
+int[] test = null;

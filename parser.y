@@ -66,8 +66,10 @@ contstruct  : contstruct fielddecl ';'  {free_ast($3);
 fielddecl   : basetype TOK_IDENT        { $$ = adopt1 ($1, changeSym($2,
                                             TOK_FIELD)); }
             | basetype TOK_ARRAY TOK_IDENT 
-                                        { $$ = adopt2 ($2, $1,
+                                        { $$ = adopt2 ($1, $2,
                                             changeSym($3, TOK_FIELD)); }
+                                        //{ $$ = adopt2 ($2, $1,
+                                            //changeSym($3, TOK_FIELD)); }
             ;
 
 
@@ -93,7 +95,7 @@ identdecl   : basetype TOK_IDENT        { $$ = adopt1 ($1,
                                             changeSym($2,
                                             TOK_DECLID)); }
             | basetype TOK_ARRAY TOK_IDENT
-                                        { $$ = adopt2 ($2, $1,
+                                        { $$ = adopt2 ($1, $2,
                                             changeSym($3, TOK_DECLID));
                                         }
             ;
@@ -196,10 +198,10 @@ allocator   : TOK_NEW TOK_IDENT '(' ')'
                                             free_ast2($3, $5); }
             ;
 
-call        : contcall ')'
-                                        { $$ = $1; free_ast ($2); }
-            | TOK_IDENT '(' ')'         { $$ = adopt1sym($1, $2,
+call        : TOK_IDENT '(' ')'         { $$ = adopt1sym($1, $2,
                                             TOK_VOID); free_ast($3); }
+            | contcall ')'
+                                        { $$ = $1; free_ast ($2); }
             ;
 
 contcall    : TOK_IDENT '(' expr        { $$ = adopt1 (adopt1sym ($2,
