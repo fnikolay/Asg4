@@ -48,11 +48,11 @@ bool existsInTable(symbol_table& table, const string* id);
 string * getNodeName(symb * symref, astree * node);
 void checkVariableType(symbol_table& table, const string* id, symb * symref);
 void addSymToTable(symbol_table& table, const string* id, symb * symref);
-void structAstToSym (astree * node, int depth, symbol_table& table,
+symb *  structAstToSym (astree * node, int depth, symbol_table& table,
   string * structType, int blockNum, FILE * output);
-void protAstToSym (astree * node, int depth, int attr, symb * symref,
+symb *  protAstToSym (astree * node, int depth, int attr, symb * symref,
   symbol_table& table, int blockNum, FILE * output);
-void funcAstToSym (astree * node, int depth, int attr, symb * symref,
+symb *  funcAstToSym (astree * node, int depth, int attr, symb * symref,
   symbol_table& table, int blockNum, FILE * output);
 void ifWhileToSym(astree * node, int depth, symbol_table& table,
   bool isField, bool isParam, int blockNum, FILE * output);
@@ -66,10 +66,10 @@ void dumpToFile(FILE* symFile, string lexinfo, symb* symref, int depth);
 void checkEqual (astree * node, symb * symref, size_t depth,
   symbol_table& table, int blockNum, FILE * output);
 void performAttr(symb * symref, bool isField, bool isParam);
-void classifyIdent (astree * node, size_t depth, symbol_table& table,
+symb *  classifyIdent (astree * node, size_t depth, symbol_table& table,
   symb* symref, bool isField, bool isParam, string * structType,
   int blockNum, FILE * output);
-void classifySymbol (astree * node, size_t depth, symbol_table& table,
+symb *  classifySymbol (astree * node, size_t depth, symbol_table& table,
   symb* symref, int attr, bool isField, bool isParam,
   int blockNum, FILE * output);
 void functionAttr(astree * func, symb * symref);

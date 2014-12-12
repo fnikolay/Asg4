@@ -83,12 +83,14 @@ basetype    : TOK_VOID                  { $$ = $1; }
 
 function : identdecl contfunc ')' block        
                                         {free_ast($3); $$ = createFunction($1, $2, $4);}
+         ;
 
-contfunc: contfunc ',' identdecl {$$ = adopt1($1, $3);}
-            | '(' identdecl                  
+contfunc  : contfunc ',' identdecl {$$ = adopt1($1, $3);}
+          | '(' identdecl                  
                                         {$$ = adopt1sym($1, $2, TOK_PARAM);}
-            | '('                            
+          | '('                            
                                         {$$ = changeSym($1, TOK_PARAM);}
+          ;
 
 
 identdecl : basetype TOK_IDENT          { $$ = adopt1 ($1, changeSym($2,
@@ -195,8 +197,9 @@ allocator   : TOK_NEW TOK_IDENT '(' ')'
                                             free_ast2($3, $5); }
             ;
 
-call        : TOK_IDENT '(' ')'         { $$ = adopt1sym($1, $2,
-                                            TOK_VOID); free_ast($3); }
+call        : TOK_IDENT '(' ')'         { $$ = adopt1sym($2, $1,
+                                            TOK_CALL); free_ast($3); }
+                                            //TOK_VOID); free_ast($3); }
             | contcall ')'
                                         { $$ = $1; free_ast ($2); }
             ;
