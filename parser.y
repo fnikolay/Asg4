@@ -91,8 +91,10 @@ contfunc: contfunc ',' identdecl {$$ = adopt1($1, $3);}
                                         {$$ = changeSym($1, TOK_PARAM);}
 
 
-identdecl : basetype TOK_IDENT {$$ = adopt1($1,$2);}
-          | basetype TOK_ARRAY TOK_IDENT {$$ = adopt2($2,$1,$3);}
+identdecl : basetype TOK_IDENT          { $$ = adopt1 ($1, changeSym($2,
+                                            TOK_DECLID)); }
+          | basetype TOK_ARRAY TOK_IDENT {$$ = adopt2 ($1, $2,
+                                            changeSym($3, TOK_DECLID)); }
           ;
 
 
