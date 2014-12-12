@@ -89,8 +89,13 @@ void addSymToTable(symbol_table& table, const string* id, symb * symref){
 }
 
 //Prepare he struct into the symbol table and print it to the .sym file.
+
+
+///////////////////////////////////////////////////////////////////////////////////
+//only when adding a struct to a symbol table
 void structAstToSym (astree * node, int depth, symbol_table& table,
-	string * structType, int blockNum, FILE * output){
+  string * structType, int blockNum, FILE * output){
+	//block_num++;
 	for ( size_t i = 1; i < node->children.size(); i++){
 	    astree * child = node->children[i];
 	    //if the child is of type struct
