@@ -100,7 +100,6 @@ symb * structAstToSym (astree * node, int depth, symbol_table& table,
 	    astree * child = node->children[i];
 	    //if the child is of type struct
 	    if (child->symbol == TOK_IDENT) {
-	    	//printf("\n");
 			symb * sym1 = create_sym(child, 0);
    	    	const string * id_name = child->children[0]->lexinfo;
    	    	if (child->children[0]->symbol == TOK_ARRAY){
@@ -109,13 +108,10 @@ symb * structAstToSym (astree * node, int depth, symbol_table& table,
 			}else{
 				id_name = child->children[0]->lexinfo;
 			}
-   	    	//printf("in struct:\n");
-   	    	//printf("id_name is: %s, type name is:%s.\n", id_name->c_str(), structType->c_str());
 			addAttributes(sym1->attributes, ATTR_field);
 			addAttributes(sym1->attributes, ATTR_struct);
 			addAttributes(sym1->attributes, ATTR_typeid);
             sym1->type = (string *) structType;
-            //printf("After assigning type: %s\n", sym1->type->c_str());
             //addSymToTable(table, id_name, sym1);
             addSymToTable(table, id_name, sym1);
             dumpToFile(output, *id_name, sym1, depth+1);
@@ -141,7 +137,6 @@ symb * structAstToSym (astree * node, int depth, symbol_table& table,
 //parse and add all of the proper attributes for the prototypes
 symb * protAstToSym (astree * node, int depth, int attr, symb * symref,
 	symbol_table& table, int blockNum, FILE * output){
-	//printf("\n");
 	symref = create_sym(node, 0);
 	astree * prot = node->children[0];
 	const string * prot_id;
@@ -153,10 +148,8 @@ symb * protAstToSym (astree * node, int depth, int attr, symb * symref,
 		}
 		prot_id = prot->children[1]->lexinfo;
 		addAttributes(symref->attributes, ATTR_array);
-		//printf("The prototype name is %s", prot_id->c_str());
 	}else{
 		prot_id = prot->children[0]->lexinfo;
-		//printf("The prototype name is %s", prot_id->c_str());
 	}
 	//symref = create_sym(prot, depth);
 
@@ -176,8 +169,6 @@ symb * protAstToSym (astree * node, int depth, int attr, symb * symref,
 	astree * param = node->children[1];
 	if (param->symbol == TOK_PARAM){
 		symref->parameters = new vector<symb *>();
-		printf("11111111111111111111111111\n");
-		printf("IN PARAM\n");
 		for(size_t i = 0; i < param->children.size(); i++){
 			//symb * parm = process_node(param->children[i], curBlock.back(), ident_table, false, true, (string *)"");
 			//process_node(param->children[i], depth + 1, ident_table,
@@ -185,12 +176,7 @@ symb * protAstToSym (astree * node, int depth, int attr, symb * symref,
 			symb* parameter = process_node(param->children[i], depth + 1, ident_table,
 				false, true, (string *)"", currBlockNum.back(), output);
 			symref->parameters->push_back(parameter);
-
-			//printf("The block number is %ld\n", currBlockNum.back());
-
 		}
-		//printf("The number of parameters is %ld\n", symref->parameters.size());
-		//printf("THE NUMBER OF parameters is: %ld\n", symref->parameters->size());
 	}
 
 	return symref;
@@ -212,18 +198,8 @@ symb * funcAstToSym (astree * node, int depth, int attr, symb * symref,
 
 		blockToSym(block, depth + 1, table,
 			false, false, currBlockNum.back(), output);
-		/*
-		symbol_stack->push_back(new symbol_table());
-		printf("\n");
-		printf("IN IFELSE BLOCK\n");
-		for (size_t i = 0; i < block->children.size(); i++){
-			process_node(block->children[i], depth + 1, ident_table,
-				false, false,(string *) "", currBlockNum.back(), output);
-				*/
 		}
 		fprintf(output, "\n");
-		//printf("THE symboltables in symbol_stack is: %ld\n", symbol_stack->size());
-		//symbol_stack->pop_back();
 	return symref;
 }
 
@@ -232,32 +208,20 @@ void ifWhileToSym(astree * node, int depth, symbol_table& table,
 	bool isField, bool isParam, int blockNum, FILE * output){
 	astree * cond = node->children[0];
 	//doCondition(astree * cond);
-	//printf("children of ifElse %s\n", cond->lexinfo->c_str());
 	astree * block = node->children[1];
 	//if (block->symbol == TOK_BLOCK){
-		//printf("children of ifElse %s\n", block->lexinfo->c_str());
 		blockNum++;
 		currBlockNum.push_back(blockNum);
 	if (block->symbol == TOK_BLOCK){
-		printf("testing ifelse block\n");
 		blockToSym(block, depth + 1, table,
 			isField, isParam, currBlockNum.back(), output);
 	}else if(block->symbol == TOK_CALL){
-		printf("TESTING ifelseCALL\n");
 		for (size_t k = 0; k < block->children.size(); k++){
 			process_node(block->children[k], depth + 1, table, isField, isParam,
 				(string *) "", currBlockNum.back(), output);
 			currBlockNum.pop_back();
 		}
-
 	}
-	/*
-	}else{
-		eprintf("Error, missing a block in file: %s,\
-		for the statement on line: %ld\n",
-        included_filenames[node->filenr].c_str(), node->linenr);
-		set_exitstatus(EXIT_FAILURE);
-		*/
 	//}
 }
 
@@ -265,7 +229,6 @@ void ifWhileToSym(astree * node, int depth, symbol_table& table,
 void ifElseToSym(astree * node, int depth, symbol_table& table,
 	bool isField, bool isParam, int blockNum, FILE * output){
 	astree * cond = node->children[0];
-	//printf("children of ifElse %s\n", cond->lexinfo);
 	//doCondition(astree * cond);
 	for(size_t i = 1; i < node->children.size(); i++){
 		
@@ -281,31 +244,17 @@ void ifElseToSym(astree * node, int depth, symbol_table& table,
 	}
 }
 
-/*
-//parse and add all of the proper attributes for vardecl
-symb* vardeclToSym(astree * node, int depth, symbol_table& table,
-	bool isField, bool isParam, int blockNum, FILE * output){
-	symb * symref = process_node (node->children[0], depth, table,
-				isField, isParam, (string *) structType,
-				currBlockNum.back(), output);
-
-	
-}
-*/
 
 //parse and add all of the proper attributes for blocks
 void blockToSym(astree * node, int depth, symbol_table& table,
 	bool isField, bool isParam, int blockNum, FILE * output){
 	symbol_stack->push_back(new symbol_table());
-	printf ("in BLOCK\n");
 	for(size_t i = 0; i < node->children.size(); i++){
 		//process_node(node->children[i], depth, table,
 		process_node(node->children[i], depth, *symbol_stack->front(),
 			isField, isParam, (string *) "", blockNum, output);
 	}
-	//printf("THE symboltables in symbol_stack is: %ld\n", symbol_stack->size());
 	symbol_stack->pop_back();
-	//printf("THE symboltables in symbol_stack after pop is: %ld\n", symbol_stack->size());
 
 }
 
@@ -374,13 +323,11 @@ void dumpToFile(FILE* symFile, string lexinfo, symb* symref, int depth){
 void checkEqual (astree * node, symb * symref, size_t depth, symbol_table& table,
 	int blockNum, FILE * output){
 	if (node->children.size() > 1){
-		printf("Need to check equivalance.\n");
 		//check if for the symbol there is a boolean attribute.
 		if (symref->attributes[ATTR_bool]){
 			symb * con = process_node (node->children[1], depth, table,
 				false, false, (string *) "", blockNum, output);
 			bool equal = typeCheck(symref->attributes, con->attributes, ATTR_bool);
-			printf("the two attributes are: %d\n", equal);
 			if(!equal){
 				printf("NOT A BOOLEAN\n");
 			}else{
@@ -416,26 +363,16 @@ void performAttr(symb * symref, bool isField, bool isParam){
 //function that classifies the Idents
 symb * classifyIdent (astree * node, size_t depth, symbol_table& table,
 	symb * symref, bool isField, bool isParam, int blockNum, FILE * output){
-	printf("CHECK1\n");
 	symref = create_sym(node, blockNum);
-	//if ( )
-	printf("ident children: %ld\n", node->children.size());
 	if(node->children.size() != 0){
 		const string * id_name;
 		int test= node->children[0]->symbol;
-		printf("CHECK2\n");
 		if(node->children[0]->symbol == TOK_ARRAY){
-			printf("CHECK3\n");
 			id_name = node->children[1]->lexinfo;
 			addAttributes(symref->attributes, ATTR_array);
 		}else{
-			printf("CHECK4\n");
 			id_name = node->children[0]->lexinfo;
 		}
-		printf("CHECK5\n");
-		//printf("id_name is: %s\n", id_name->c_str());
-
-		//printf (" Assingning blocknumber with %ld.\n", symref->blocknr);
 		symref->type = (string *) node->lexinfo;
 		addAttributes(symref->attributes, ATTR_struct);
 		addAttributes(symref->attributes, ATTR_typeid);
@@ -445,7 +382,6 @@ symb * classifyIdent (astree * node, size_t depth, symbol_table& table,
 	}
 
 	return symref;
-	printf("2222222222222222222222222\n");
 }
 
 //function that classifies other types
@@ -460,17 +396,12 @@ symb * classifySymbol (astree * node, size_t depth, symbol_table& table,
 	}else{
 		id_name = node->children[0]->lexinfo;
 	}
-
-	//printf("id_name is: %s\n", id_name->c_str());//, key->c_str());
-	
-	//printf (" Assingning blocknumber with %ld.\n", symref->blocknr);
 	addAttributes(symref->attributes, attr);
 	performAttr(symref, isField, isParam);
 	addSymToTable(table, id_name, symref);
 	symref->type = (string *) structType;
 	dumpToFile(output, *id_name, symref, depth);
 	return symref;
-	printf("33333333333333333333333333333\n");
 }
 
 
@@ -541,21 +472,16 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 	//printf("========block num: %ld\n", blockNum);
 
 	symb * symref = NULL;
-	//printf("========The node symbol number is: %ld \n", node->symbol);
-
 	switch (node->symbol){
 
 		case TOK_BLOCK:
 		{
-			printf("Block\n");
-
 			blockToSym(node, depth, table, isField, isParam, blockNum, output);
 			break;
 		}
 		case TOK_TRUE:
 		case TOK_FALSE:
 		{
-			printf("found either TRUE or FALSE\n");
 			symref = create_sym (node,depth);
 			symref->attributes[ATTR_bool] = true;
 			symref->blocknr = blockNum;
@@ -565,9 +491,9 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 	    }
 	    case ';':
 	    {
-	    	printf("PLEASE WORK\n");
 	    	break;
 	    }
+
 	    /*
 	    case TOK_INTCON:
 	    {
@@ -591,62 +517,44 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 	    */
 		case TOK_VARDECL:
 		{
-			printf("TEST\n\n");
-	    	printf("VarDecl\n");
 	    	astree * type = node->children[0];
 			symref = process_node (type, depth, table, isField, isParam,
 				(string *) structType, blockNum, output);
 			//string * var = (string *) getNodeName(symref, node);
-			//addSymToTable(*symbol_stack->back(), var, symref);
-
-	    	/*
-			symref = process_node (node->children[0], depth, table,
-				isField, isParam, (string *) structType, blockNum, output);
-			*/
-	    	//printf("going into constant symbol (to the right of the = sign)\n");
-	    	//checkEqual (node,sym,depth,table);
-			//print_sym(* id_name, sym);
 			break;
 		}
 		case TOK_IDENT:
 		{
-			printf("TEST1\n\n");
-			printf("========The node is: %s\n", node->lexinfo->c_str());
 			symref = classifyIdent (node, depth, table, symref,
 				isField, isParam, blockNum, output);
 			break;
 		}
 		case TOK_INT:
 		{
-			printf("TEST2\n\n");
 			symref = classifySymbol (node, depth, table, symref, ATTR_int,
 				isField, isParam, (string *) structType, blockNum, output);
 			break;
 		}
 		case TOK_CHAR:
 		{
-			printf("TEST3\n\n");
 			symref = classifySymbol (node, depth, table, symref, ATTR_char,
 				isField, isParam, (string *) structType, blockNum, output);
 			break;
 		}
 		case TOK_BOOL:
 		{
-			printf("TEST4\n\n");
 			symref = classifySymbol (node, depth, table, symref, ATTR_bool,
 				isField, isParam, (string *) structType, blockNum, output);
 			break;
 		}
 		case TOK_STRING:
 		{
-			printf("TEST5\n\n");
 			symref = classifySymbol (node, depth, table, symref, ATTR_string,
 				isField, isParam, (string *) structType, blockNum, output);
 			break;
 		}
 		case TOK_VOID:
 		{
-			printf("TEST6\n\n");
 			symref = classifySymbol (node, depth, table, symref, ATTR_string,
 				isField, isParam, (string *) structType, blockNum, output);
 			node->children[0]->sym = symref;
@@ -654,7 +562,6 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 		}
 		case TOK_TYPEID:
 		{
-			printf("TEST7\n\n");
 			const string * struct_id;
 			if (node->children[0]->symbol == TOK_ARRAY){
 				struct_id = node->children[1]->lexinfo;
@@ -667,14 +574,11 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 			addAttributes(symref->attributes, ATTR_struct);
 			addAttributes(symref->attributes, ATTR_typeid);
 			symref->type = (string *) struct_id;
-			//printf("After assigning type: %s\n", symref->type->c_str());
 			symref->fields = new symbol_table ();
 			dumpToFile(output, *struct_id, symref, depth);
-			//printf("struct_id is: %s\n", struct_id->c_str());
 			addSymToTable(table, struct_id, symref);
 
 			symref = structAstToSym (node, depth, *symref->fields, symref, (string *) struct_id, blockNum, output);
-			//printf("THE NUMBER OF fields in the struct is: %ld\n", symref->fields->size());
 			fprintf(output, "\n");
 
 	    	break;
@@ -682,56 +586,41 @@ symb * process_node(astree * node, size_t depth, symbol_table& table,
 	    
 	    case TOK_PROTOTYPE:
 	    {
-	    	printf("\n");
-	    	printf("Prototype \n");
 	    	symref = protAstToSym (node, depth, ATTR_prototype, symref, table, blockNum, output);
-
-	    	printf("LEFT PROTOTYPE with symbol \n");
-	    	//printf("THE NUMBER OF parameters is: %ld\n", symref->parameters->size());
 			break;
 	    }
 
 	    case TOK_FUNCTION:
 	    {
-	    	printf("TEST\n\n");
 	    	funcAstToSym (node, depth, ATTR_function, symref, table, blockNum, output);
 	    	
 	    	break;
 	    }
 	    case TOK_IFELSE:
 	    {
-	    	printf("IFELSE\n");
-	    	printf("========The node is: %s\n", node->lexinfo->c_str());
 	    	ifElseToSym(node, depth, table, isField, isParam, blockNum, output);
 			break;
 		}
 		case TOK_WHILE:
 		case TOK_IF:
 		{
-			printf("IF or WHILE\n");
 			ifWhileToSym(node, depth, table, isField, isParam, blockNum, output);
 			break;
 		}
 		case TOK_CALL:
 		{
-			printf("IN A CALL\n\n");
 			symref = create_sym(node, blockNum);
 			break;
 		}
 		default:
 		{
 			create_sym (node, blockNum);
-			printf("NOT DEFINED YET\n");
 			//classifySymbol (node, depth, table, sym, isField, isParam);
 			//printf("Found Token that is not handled yet %s with the TOK called: %s\n",
 			//	node->lexinfo->c_str(), get_yytname (node->symbol));
 			break;
 		}
 	}
-	printf("+++++At the end of process node, the top of the\n");
-	//printf("+++++currBlockNum is:%ld and the number on the currBlock stack is %ld\n",
-		//currBlockNum.back(), currBlockNum.size());
-    printf("POOP\n");
 	return symref;
 }
 
@@ -743,8 +632,6 @@ void addAttributes(attr_bitset& sym_attribute, int attribute){
 
 //Function to set up the symbol 
 symb * create_sym (astree * node, size_t blcknr){
-	printf("Processing Node: %s\n", node->lexinfo->c_str());
-	//printf("With child node: %s\n", node->children[0]->lexinfo->c_str());
 	symb * symref = new symb();
 	symref->filenr = node->filenr;
 	symref->linenr = node->linenr;
@@ -754,7 +641,6 @@ symb * create_sym (astree * node, size_t blcknr){
 	symref->fields = NULL;
 	symref->parameters = NULL;
 	//symref->type = (string *) "test";
-	printf("Testing\n");
 	return symref;
 }
 
@@ -766,19 +652,12 @@ void parse_ast(FILE * output, astree * root){
 	{
 		eprintf("The astree needs to start with a TOK_ROOT\n");
 	}
-	//printf("The number of nodes in this tree is:%ld\n", root->children.size() );
 	int blockNum = 0;
 	currBlockNum = vector<int>();
 	currBlockNum.push_back(blockNum);
 	symbol_stack = new vector<symbol_table*>();
-	/*for ( size_t i = 0; i < root->children.size(); i++){
-    	astree * child = root->children[i];
-    	printf("\n--------The roots childs name is: %s\n", child->children[0]->lexinfo->c_str());
-
-    }*/
 	for ( size_t i = 0; i < root->children.size(); i++){
     	astree * child = root->children[i];
-    	//printf("\n--------The roots childs name is: %s\n", child->children[0]->lexinfo->c_str());
     	process_node(child, blockNum, global_table,
     		false, false, (string *)"", blockNum,
     		output);
