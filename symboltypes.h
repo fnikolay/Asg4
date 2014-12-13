@@ -42,7 +42,6 @@ struct symb {
    vector<symb*>* parameters;
    string * type;        //type is used when the variable is of type struct
 };
-void print_sym(string id_name, symb * symref);
 bool typeCheck(attr_bitset& first, attr_bitset& second, int atr);
 bool existsInTable(symbol_table& table, const string* id);
 string * getNodeName(symb * symref, astree * node);
@@ -56,7 +55,7 @@ symb *  funcAstToSym (astree * node, int depth, int attr, symb * symref,
   symbol_table& table, int blockNum, FILE * output);
 void ifWhileToSym(astree * node, int depth, symbol_table& table,
   bool isField, bool isParam, int blockNum, FILE * output);
-void ifElseToSym(astree * node, int depth, symbol_table& table,
+void ifElseToSym(astree * node, int depth,
   bool isField, bool isParam, int blockNum, FILE * output);
 void blockToSym(astree * node, int depth, symbol_table& table,
   bool isField, bool isParam, int blockNum, FILE * output);

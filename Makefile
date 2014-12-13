@@ -112,7 +112,7 @@ checksource: ${ALLCSRC}
 	- checksource ${ALLCSRC}
 
 submit	:	${ALLSRC}
-	submit cmps104a-wm.f14 asg3 ${ALLSRC}
+	submit cmps104a-wm.f14 asg5 ${ALLSRC}
 	
 #
 # Test

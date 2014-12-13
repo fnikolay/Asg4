@@ -5,6 +5,7 @@ node (3.1.0) {0} struct "node"
 func (3.2.0) {0} struct "node" function 
     head (3.2.11) {1} struct "node" variable param lval 
     length (3.2.22) {1} int variable param lval 
+
     a (3.3.1) {1} int variable lval 
     b (3.4.1) {1} string variable lval 
     c (3.5.1) {1} struct "node" variable lval 

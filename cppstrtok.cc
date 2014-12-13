@@ -75,7 +75,7 @@ void scanTokens (char** argv){
     symFil = createFile(getBaseName(argv[optind]), ".sym");
     
     yyparse();
-    dump_astree (ast, yyparse_astree) ;
+    dump_astree (ast, yyparse_astree);
     parse_ast (symFil, yyparse_astree);
 }
 
