@@ -2,4 +2,3 @@
 
 #include "oclib.oh"
 assert ("null" == null);
-int q = 3;

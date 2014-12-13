@@ -102,7 +102,7 @@ identdecl : basetype TOK_IDENT          { $$ = adopt1 ($1, changeSym($2,
 
 block       : state '}'                { $$ = $1, free_ast($2); }
             |'{' '}'                   { $$ = changeSym($1,TOK_BLOCK); free_ast ($2); }
-            | ';'                      { free_ast($1);}
+            | ';'                      { $$ = $1;}
             //{ $$ = changeSym($1,TOK_BLOCK); } 
             ;
 
