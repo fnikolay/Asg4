@@ -21,7 +21,8 @@ using namespace std;
 
 enum { ATTR_void, ATTR_bool, ATTR_char, ATTR_int, ATTR_null,
        ATTR_string, ATTR_struct, ATTR_array, ATTR_prototype, 
-       ATTR_function, ATTR_variable, ATTR_field, ATTR_typeid, ATTR_param,
+       ATTR_function, ATTR_variable, ATTR_field, ATTR_typeid,
+       ATTR_param, 
        ATTR_lval, ATTR_const, ATTR_vreg, ATTR_vaddr,
        ATTR_bitset_size,
 };
@@ -40,13 +41,15 @@ struct symb {
    size_t filenr, linenr, offset;
    size_t blocknr;
    vector<symb*>* parameters;
-   string * type;        //type is used when the variable is of type struct
+   string * type;        
 };
 bool typeCheck(attr_bitset& first, attr_bitset& second, int atr);
 bool existsInTable(symbol_table& table, const string* id);
 string * getNodeName(symb * symref, astree * node);
-void checkVariableType(symbol_table& table, const string* id, symb * symref);
-void addSymToTable(symbol_table& table, const string* id, symb * symref);
+void checkVariableType(symbol_table& table, const string* id,
+symb * symref);
+void addSymToTable(symbol_table& table, const string* id, 
+symb * symref);
 symb *  structAstToSym (astree * node, int depth, symbol_table& table,
   string * structType, int blockNum, FILE * output);
 symb *  protAstToSym (astree * node, int depth, int attr, symb * symref,
@@ -68,7 +71,8 @@ void performAttr(symb * symref, bool isField, bool isParam);
 symb *  classifyIdent (astree * node, size_t depth, symbol_table& table,
   symb* symref, bool isField, bool isParam, string * structType,
   int blockNum, FILE * output);
-symb *  classifySymbol (astree * node, size_t depth, symbol_table& table,
+symb *  classifySymbol (astree * node, size_t depth,
+symbol_table& table,
   symb* symref, int attr, bool isField, bool isParam,
   int blockNum, FILE * output);
 void functionAttr(astree * func, symb * symref);

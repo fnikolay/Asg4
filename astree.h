@@ -20,7 +20,7 @@ struct astree {
    size_t offset;            // offset of token with current line
    const string* lexinfo;    // pointer to lexical information
    vector<astree*> children; // children of this n-way node
-   symb* sym;               // symbol that is associated with symbol table 
+   symb* sym;               // symbol associated with symbol table 
 };
 
 astree* new_astree (int symbol, int filenr, int linenr, int offset,

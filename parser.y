@@ -69,7 +69,7 @@ fielddecl   : basetype TOK_IDENT        { $$ = adopt1 ($1, changeSym($2,
                                         { $$ = adopt2 ($1, $2,
                                             changeSym($3, TOK_FIELD)); }
                                         //{ $$ = adopt2 ($2, $1,
-                                            //changeSym($3, TOK_FIELD)); }
+                                        //changeSym($3, TOK_FIELD)); }
             ;
 
 
@@ -82,12 +82,14 @@ basetype    : TOK_VOID                  { $$ = $1; }
 
 
 function : identdecl contfunc ')' block        
-                                        {free_ast($3); $$ = createFunction($1, $2, $4);}
+                                        {free_ast($3); $$ = 
+                                         createFunction($1, $2, $4);}
          ;
 
 contfunc  : contfunc ',' identdecl {$$ = adopt1($1, $3);}
           | '(' identdecl                  
-                                        {$$ = adopt1sym($1, $2, TOK_PARAM);}
+                                        {$$ = adopt1sym($1,
+                                         $2, TOK_PARAM);}
           | '('                            
                                         {$$ = changeSym($1, TOK_PARAM);}
           ;
@@ -96,17 +98,20 @@ contfunc  : contfunc ',' identdecl {$$ = adopt1($1, $3);}
 identdecl : basetype TOK_IDENT          { $$ = adopt1 ($1, changeSym($2,
                                             TOK_DECLID)); }
           | basetype TOK_ARRAY TOK_IDENT {$$ = adopt2 ($1, $2,
-                                            changeSym($3, TOK_DECLID)); }
+                                            changeSym($3, TOK_DECLID)
+                                            ); }
           ;
 
 
 block       : state '}'                { $$ = $1, free_ast($2); }
-            |'{' '}'                   { $$ = changeSym($1,TOK_BLOCK); free_ast ($2); }
+            |'{' '}'                   { $$ = changeSym($1,TOK_BLOCK);
+                                         free_ast ($2); }
             | ';'                      { $$ = $1;}
             //{ $$ = changeSym($1,TOK_BLOCK); } 
             ;
 
-state       : '{' statement             { $$ = adopt1(changeSym($1,TOK_BLOCK), $2); }
+state       : '{' statement             { $$ = adopt1(changeSym($1,
+                                          TOK_BLOCK), $2); }
             | state statement           { $$ = adopt1($1,$2); }
             ;
 
@@ -216,7 +221,8 @@ variable    : TOK_IDENT                 { $$ = $1; }
                                             TOK_INDEX), $1, $3);
                                             free_ast($4); }
             | expr '.' TOK_IDENT        { $$ = adopt2 ($2, $1,
-                                            changeSym ($3, TOK_FIELD) ); }
+                                            changeSym ($3,
+                                            TOK_FIELD) ); }
             ;
 
 constant    : TOK_INTCON                { $$ = $1; }
